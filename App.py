@@ -32,16 +32,19 @@ def voice_Input():
         with open("speak.mp3", "wb") as out:
             out.write(response.audio_content)
             print('Audio content written to file "speak.mp3"')
+            out.close()
+        
         try:
             playsound.playsound('speak.mp3')
-            os.remove("speak.mp3")
         except FileNotFoundError:
             print("File not found")
+            
+        os.remove("speak.mp3")    
+        
+        
+            
 
     def detect_intent_texts(project_id, session_id, text, language_code):
-
-        
-
         session_client = dialogflow.SessionsClient()
 
         session = session_client.session_path(project_id, session_id)
