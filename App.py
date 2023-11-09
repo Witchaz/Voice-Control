@@ -1,45 +1,19 @@
 from tkinter import *
+from gtts import gTTS
 from tkinter import ttk,filedialog,messagebox
 import tkinter as tk
 import threading,playsound
 import speech_recognition as sr
-import os,time
+import os,time,json
 from google.cloud import dialogflow
 import constants
 
 def voice_Input():
     def tts(text):
-        from google.cloud import texttospeech
-
-        client = texttospeech.TextToSpeechClient()
-
-        synthesis_input = texttospeech.SynthesisInput(text=text)
-
-        voice = texttospeech.VoiceSelectionParams(
-            language_code="th-Thai", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
-        )
-
-        audio_config = texttospeech.AudioConfig(
-            audio_encoding=texttospeech.AudioEncoding.MP3
-        )
-
-
-        response = client.synthesize_speech(
-            input=synthesis_input, voice=voice, audio_config=audio_config
-        )
-
-
-        with open("speak.mp3", "wb") as out:
-            out.write(response.audio_content)
-            print('Audio content written to file "speak.mp3"')
-            out.close()
-        
-        try:
-            playsound.playsound('speak.mp3')
-        except FileNotFoundError:
-            print("File not found")
-            
-        os.remove("speak.mp3")    
+        tts = gTTS(text,lang='th')
+        tts.save('Speak.mp3')
+        playsound.playsound('Speak.mp3')
+        os.remove('Speak.mp3')
         
         
             
@@ -68,7 +42,11 @@ def voice_Input():
             )
         )
         print("Fulfillment text: {}\n".format(response.query_result.fulfillment_text))
-        return format(response.query_result.fulfillment_text);
+        s = (format((response.query_result.fulfillment_messages[0].text)))
+        s.replace('\\','\\\\')
+        decoded_text = bytes(s, 'utf-8').decode('unicode-escape').encode('latin1').decode('utf-8')
+        print(decoded_text)
+        return decoded_text
 
 
     vc = sr.Recognizer()
@@ -92,7 +70,6 @@ def voice_Input():
     def listening():
         
         with sr.Microphone() as source: #เปิดไมค์
-            
             print('พูดไรหน่อย')
             audio = vc.listen(source)
             main(audio)
