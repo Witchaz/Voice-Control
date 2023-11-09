@@ -1,6 +1,6 @@
 from flask import Flask,request,jsonify
 import gspread
-import datetime,json
+import datetime,json,ast
 from oauth2client.service_account import ServiceAccountCredentials
 
 
@@ -16,6 +16,14 @@ def findBoardID(worksheet,boardID):
     if boardID == None:
         return None
     return  worksheet.find(boardID).row
+
+def createPayLoad():
+    d_str = sheet.cell(2, 5).value
+    res = {"digitalValue": d_str}
+    ast.literal_eval(str(res))
+    return res
+
+
 
 def response(text):
     res = {"fulfillmentMessages": [{"text": {"text": [text]}}]}
@@ -85,4 +93,4 @@ def set_data():
     sheet.update_cell(row,3,humidity)
     sheet.update_cell(row,4,temp)
 
-    return "Update cell"
+    return createPayLoad
