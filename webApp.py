@@ -63,11 +63,11 @@ def test_run():
     message = request.get_json()
     intent = message["queryResult"]["intent"]["displayName"]
 
-    if intent == "Test":
+    if intent == "order.Test":
         return jsonify(response("ทดสอบสำเร็จ"))
-    elif intent == "getStatus":
+    elif intent == "order.getStatus":
         return jsonify(response(fecth_data()))
-    elif intent == "setPin":
+    elif intent == "order.setPin":
         pin = str(int(message["queryResult"]["parameters"]["pin"]))
         status = str(message["queryResult"]["parameters"]["status"])
         if (update_pinValue(pin,status)):

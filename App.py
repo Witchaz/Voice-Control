@@ -7,14 +7,18 @@ import speech_recognition as sr
 import os,time,json
 from google.cloud import dialogflow
 import constants
-
+from io import BytesIO
 def voice_Input():
     def tts(text):
+        # mp3_fp = BytesIO()
         tts = gTTS(text,lang='th')
-        tts.save('Speak.mp3')
-        playsound.playsound('Speak.mp3')
-        os.remove('Speak.mp3')
-        
+       # tts.write_to_fp(mp3_fp)
+        try:
+            tts.save('Speak.mp3')
+            playsound.playsound('Speak.mp3')
+            os.remove('Speak.mp3')
+        except:
+            pass
         
             
 
@@ -46,6 +50,9 @@ def voice_Input():
         s.replace('\\','\\\\')
         decoded_text = bytes(s, 'utf-8').decode('unicode-escape').encode('latin1').decode('utf-8')
         print(decoded_text)
+        first = decoded_text.find('"')
+        print(first)
+        respond_text.config(text=decoded_text[first:-1])
         return decoded_text
 
 
@@ -54,7 +61,7 @@ def voice_Input():
         try:
             say = vc.recognize_google(audio,language="th-TH")
             print(say + "\n\n")
-            text.config(text = say)
+            send_text.config(text = say)
             respond = detect_intent_texts(constants.PROJECT_ID,constants.SESSION_ID,say,constants.LANGUAGE_CODE)
             tts(respond)
             
@@ -95,8 +102,10 @@ status = ttk.Label(root,text='Status : Stand By')
 status.pack(anchor=N,pady=15)
 button = ttk.Button(root,text='Start',command = voice_Input)
 button.pack(anchor=N,pady=10)
-text = ttk.Label(root,text='')
-text.pack(anchor=N,pady=5)
+send_text = ttk.Label(root,text='')
+send_text.pack(anchor=N,pady=5)
+respond_text = ttk.Label(root,text='')
+respond_text.pack(anchor=N,pady=0)
 
 root.mainloop()
 
