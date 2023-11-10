@@ -51,8 +51,7 @@ def voice_Input():
         decoded_text = bytes(s, 'utf-8').decode('unicode-escape').encode('latin1').decode('utf-8')
         print(decoded_text)
         first = decoded_text.find('"')
-        print(first)
-        respond_text.config(text=decoded_text[first:-1])
+        respond_text.config(text=decoded_text[first+1:-2])
         return decoded_text
 
 

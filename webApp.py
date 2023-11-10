@@ -19,9 +19,10 @@ def findBoardID(worksheet,boardID):
 
 def createPayLoad():
     d_str = sheet.cell(2, 5).value
-    res = {"digitalValue": d_str}
-    ast.literal_eval(str(res))
-    return res
+    res = json.loads(d_str)
+    # res = {"digitalValue": d_str}
+    # ast.literal_eval(str(res))
+    return str(res['5'])
 
 
 
@@ -93,4 +94,4 @@ def set_data():
     sheet.update_cell(row,3,humidity)
     sheet.update_cell(row,4,temp)
 
-    return createPayLoad
+    return createPayLoad()
